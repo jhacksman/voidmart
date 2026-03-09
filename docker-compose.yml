@@ -2,6 +2,7 @@ version: "2.1"
 
 services:
 
+  # Main app (Void Mart + hidden hackerspace ticketing mode)
   voidmart:
     build: .
     privileged: true
@@ -9,8 +10,45 @@ services:
     network_mode: host
     ports:
       - '8080'
+    environment:
+      # ---- Kiosk defaults (existing) ----
+      - 'PORT=8080'
+      - 'LAUNCH_URL=http://127.0.0.1:8080/'
+
+      # ---- Hidden "dev-mode" style unlock ----
+      # Tap an (invisible) region N times within a time window to enter ticketing mode.
+      # Implementation lives in the web UI, but keep knobs here so balena can tune it.
+      - 'SECRET_TAP_COUNT=10'
+      - 'SECRET_TAP_WINDOW_MS=5000'
+
+      # Where the secret region is (fractions of screen size; UI should interpret these)
+      # Default: top-left corner 15% x 15%.
+      - 'SECRET_TAP_REGION_X0=0.0'
+      - 'SECRET_TAP_REGION_Y0=0.0'
+      - 'SECRET_TAP_REGION_X1=0.15'
+      - 'SECRET_TAP_REGION_Y1=0.15'
+
+      # Ticketing options (UI/app can use these to render ticket types)
+      # Values are suggestions; app can treat as CSV.
+      - 'TICKET_TYPES=parking_permit,parking_ticket,broken_stuff'
+
+      # Local Redis (recommended) — keeps a log of printed tickets/transactions.
+      # Set to "" to disable logging.
+      - 'REDIS_URI=redis://127.0.0.1:6379'
+      - 'REDIS_CONNECT_RETRY=20'
+
     volumes:
       - 'cache:/cache'
+
+  # Local Redis so we don't depend on external Upstash.
+  # NOTE: Using host networking to match the other services in this balena setup.
+  redis:
+    image: redis:7-alpine
+    restart: always
+    network_mode: host
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - 'redis-data:/data'
 
   browser:
     image: bh.cr/balenalabs/browser-amd64
@@ -49,3 +87,4 @@ volumes:
   pwc:
   browser:
   cache:
+  redis-data:

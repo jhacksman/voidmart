@@ -24,6 +24,12 @@ The `docker-compose.yml` is setup to be mostly specific to the balena platform, 
 - `browser`: Runs small chromium and hosts its own xserver
 - `wifi-connect`: Spins up an access point with configuration when it loses wifi (not needed totally, but handy)
 - `util`: Sets the machine hostname via balena supervisor API, and runs a nightly restart cron
+- `redis` (fork-only change): Local Redis for logging, so the kiosk doesn’t depend on hosted Redis
+
+### Hackerspace hidden mode (fork-only)
+The `jhacksman/voidmart` fork adds configuration for a hidden "admin" mode (dev-options style tap gesture) used for hackerspace ticketing/permits.
+
+See: `docs/HACKERSPACE_MODE.md`
 
 ## Environment variables
 
