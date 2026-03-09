@@ -138,4 +138,60 @@ function formatDate() {
     return formattedDate;
 }
 
+// minimal CTRLH ticket printer. Kept as a property on the existing export
+// to avoid breaking existing require() usage.
+async function printCtrlhTicket({ kind, title, timestamp, note }) {
+    const p = new ThermalPrinter({
+        type: PrinterTypes.EPSON,
+        interface: process.env.PRINTER_DEV_PATH || '/dev/epson',
+        options: {
+            timeout: 1000,
+        },
+        width: 42,
+        characterSet: CharacterSet.PC437_USA,
+        breakLine: BreakLine.WORD,
+        removeSpecialCharacters: false,
+        lineCharacter: '-',
+    })
+
+    await p.isPrinterConnected()
+
+    const printedAt = timestamp ? new Date(timestamp) : new Date()
+
+    p.setTypeFontA()
+    p.alignCenter()
+    p.println('CTRLH')
+    p.bold(true)
+    p.println(title || 'Ticket')
+    p.bold(false)
+    p.println('')
+
+    p.alignLeft()
+    p.drawLine()
+    p.println(`Type: ${kind || 'unknown'}`)
+    p.println(`Time: ${printedAt.toLocaleString()}`)
+    p.drawLine()
+
+    if (note && note.trim()) {
+        p.println('Note:')
+        p.println(note.trim())
+        p.drawLine()
+    }
+
+    p.println('')
+    p.alignCenter()
+    p.println('---')
+    p.println('Please take this ticket')
+    p.cut()
+
+    try {
+        await p.execute()
+        console.log('CTRLH print success.', { kind, title })
+    } catch (error) {
+        console.error('CTRLH print error:', error)
+    }
+}
+
+printit.printCtrlhTicket = printCtrlhTicket
+
 module.exports = printit

@@ -661,4 +661,56 @@ body, html {
   font-size: 130px;
 }
 
+.modeMenu .body, .ctrlh .body, .ctrlhForm .body, .ctrlhThanks .body {
+  padding: 30px;
+  color: white;
+  text-align: center;
+}
+.modeMenu .body .title, .ctrlh .body .title, .ctrlhForm .body .title, .ctrlhThanks .body .title {
+  font-size: 48px;
+  margin-bottom: 24px;
+}
+.modeMenu .body .meta, .ctrlh .body .meta, .ctrlhForm .body .meta, .ctrlhThanks .body .meta {
+  margin-bottom: 16px;
+  opacity: 0.85;
+}
+.modeMenu .body textarea.note, .ctrlh .body textarea.note, .ctrlhForm .body textarea.note, .ctrlhThanks .body textarea.note {
+  width: 90vw;
+  max-width: 900px;
+  height: 180px;
+  padding: 16px;
+  font-size: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+  outline: none;
+  margin-bottom: 20px;
+}
+.modeMenu .body .buttons, .ctrlh .body .buttons, .ctrlhForm .body .buttons, .ctrlhThanks .body .buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+.modeMenu .body .buttons .button, .ctrlh .body .buttons .button, .ctrlhForm .body .buttons .button, .ctrlhThanks .body .buttons .button {
+  display: inline-block;
+  padding: 18px 28px;
+  border-radius: 14px;
+  font-size: 28px;
+  width: 90vw;
+  max-width: 600px;
+  user-select: none;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+.modeMenu .body .buttons .button.primary, .ctrlh .body .buttons .button.primary, .ctrlhForm .body .buttons .button.primary, .ctrlhThanks .body .buttons .button.primary {
+  background: rgba(255, 255, 255, 0.18);
+}
+.modeMenu .body .desc, .ctrlh .body .desc, .ctrlhForm .body .desc, .ctrlhThanks .body .desc {
+  font-size: 24px;
+  opacity: 0.9;
+}
+
 /*# sourceMappingURL=main.css.map */

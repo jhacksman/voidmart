@@ -26,13 +26,56 @@ html
     .content
 
       //- landing
-      .page.landing.show(onclick="goto('.browse')")
+      .page.landing.show
         .wrapper
           .logo
             img(src='images/logo.png', draggable='false')
           .title Tap to start shopping!
         .bg
           .img
+
+      //- mode menu (secret)
+      .page.modeMenu
+        .header(onclick="goto('.landing')")
+          img.logo(src='images/logo_small.png')
+        .body
+          .title Select mode
+          .buttons
+            .button.primary(onclick="goto('.browse')") Voidmart
+            .button.secondary(onclick="goto('.ctrlh')") CTRLH
+
+      //- CTRLH menu
+      .page.ctrlh
+        .header(onclick="goto('.modeMenu')")
+          .back
+            i.fa-light.fa-arrow-left
+          img.logo(src='images/logo_small.png')
+        .body
+          .title CTRLH tickets
+          .buttons
+            .button.primary(onclick="ctrlhSelect('parking_permit')") Parking Permit
+            .button.primary(onclick="ctrlhSelect('parking_ticket')") Parking Ticket
+            .button.primary(onclick="ctrlhSelect('broken_stuff')") Broken Stuff Ticket
+
+      //- CTRLH form
+      .page.ctrlhForm
+        .header(onclick="goto('.ctrlh')")
+          .back
+            i.fa-light.fa-arrow-left
+          img.logo(src='images/logo_small.png')
+        .body
+          .title.ctrlhTitle
+          .meta
+            .timestamp
+          textarea.note(placeholder='Optional note...')
+          .buttons
+            .button.primary(onclick="ctrlhPrint()") Print
+
+      //- CTRLH thank you
+      .page.ctrlhThanks
+        .body
+          .title Printed
+          .desc Please take your ticket.
 
       //- browse
       .page.browse

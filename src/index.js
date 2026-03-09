@@ -58,7 +58,7 @@ app.post('/printit', async (req, res) => {
     let fortune = fortunes()
     printit(name, fortune)
     console.log('* Printing:', name, fortune)
-    
+
     try {
         await redis.set(
             Date.now(),
@@ -75,6 +75,72 @@ app.post('/printit', async (req, res) => {
     })
 })
 
+// CTRLH ticket printing (secret mode)
+app.post('/ctrlh/print', async (req, res) => {
+    const kind = req.body.kind
+    const title = req.body.title
+    const timestamp = req.body.timestamp
+    const note = req.body.note
+
+    // Print (best-effort)
+    try {
+        if (typeof printit.printCtrlhTicket === 'function') {
+            await printit.printCtrlhTicket({ kind, title, timestamp, note })
+        } else {
+            // fallback: use existing receipt printer
+            await printit(`CTRLH: ${title || kind || 'ticket'}`, note || '')
+        }
+    } catch (e) {
+        console.log('CTRLH print error', e)
+    }
+
+    // Log (best-effort)
+    try {
+        await redis.set(
+            Date.now(),
+            JSON.stringify({
+                mode: 'CTRLH',
+                kind,
+                title,
+                timestamp,
+                note
+            })
+        )
+    } catch (e) {
+        console.log('Redis error', e)
+    }
+
+    res.json({ ok: true })
+})
+
+app.post('/ctrlh/print', async (req, res) => {
+    const kind = req.body.kind
+    const title = req.body.title
+    const timestamp = req.body.timestamp
+    const note = req.body.note
+
+    const allowed = new Set(['parking_permit', 'parking_ticket', 'broken_stuff'])
+    if (!allowed.has(kind)) {
+        return res.status(400).json({
+            ok: false,
+            error: 'Invalid kind',
+        })
+    }
+
+    try {
+        if (typeof printit.printCtrlhTicket === 'function') {
+            await printit.printCtrlhTicket({ kind, title, timestamp, note })
+        } else {
+            throw new Error('printCtrlhTicket not available')
+        }
+    } catch (e) {
+        console.log('* CTRLH print error', e)
+        // still return ok:false so UI can fail gracefully
+        return res.status(500).json({ ok: false })
+    }
+
+    res.json({ ok: true })
+})
 
 app.get('/fortune', async (req, res) => {
     res.send(fortunes())
